@@ -1,16 +1,21 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { z } from "zod";
 import { SignUpSchema, LoginSchema } from "../validations/auth.validation.js";
 export const SignUp = async (req, res) => {
-  const valid = SignUpSchema.safeParse(req.body);
-  if (!valid.success) {
+  const isValid = SignUpSchema.safeParse(req.body);
+  if (!isValid.success) {
+    const errorMessages = isValid.error.issues.map((err) => {
+      return `${err.message}`;
+    });
     return res.status(400).json({
       success: false,
       message: "Validation Failed",
+      errors: errorMessages,
     });
   }
-  const { name, password, email, role } = valid.data;
+  const { name, password, email, role } = isValid.data;
   const user = await User.findOne({ email });
   if (user)
     return res
@@ -45,11 +50,16 @@ export const SignUp = async (req, res) => {
 export const Login = async (req, res) => {
   try {
     const isValid = LoginSchema.safeParse(req.body);
-    if (!isValid.success)
+    if (!isValid.success) {
+      const errorMessages = isValid.error.issues.map((err) => {
+        return `${err.message}`;
+      });
       return res.status(400).json({
         success: false,
         message: "Validation Failed",
+        errors: errorMessages,
       });
+    }
     const { password, email } = isValid.data;
 
     const user = await User.findOne({ email });

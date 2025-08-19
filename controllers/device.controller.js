@@ -17,11 +17,16 @@ export const registerDevice = async (req, res) => {
     //     .status(400)
     //     .json({ success: false, message: "User Does not exist" });
     const isValid = NewDeviceSchema.safeParse(req.body);
-    if (!isValid.success)
+    if (!isValid.success) {
+      const errorMessages = isValid.error.issues.map((err) => {
+        return `${err.message}`;
+      });
       return res.status(400).json({
         success: false,
         message: "Validation Failed",
+        errors: errorMessages,
       });
+    }
     const { name, type, status } = isValid.data;
     const newDevice = new Device({
       name,
@@ -68,18 +73,23 @@ export const updateDevice = async (req, res) => {
     if (!user_id)
       return res.status(403).json({ success: false, message: "Unauthorized" });
     const isValid = UpdateDeviceSchema.safeParse(req.body);
-    if (!isValid)
+
+    if (!isValid.success) {
+      const errorMessages = isValid.error.issues.map((err) => {
+        return `${err.message}`;
+      });
       return res.status(400).json({
         success: false,
         message: "Validation Failed",
-        errors: isValid.error.errors,
+        errors: errorMessages,
       });
+    }
 
     const dataToUpdate = isValid.data;
 
     const device_id = req.params.id;
     const updatedDevice = await Device.findOneAndUpdate(
-      device_id,
+      { _id: device_id },
       dataToUpdate,
       { new: true, runValidators: true }
     );
@@ -105,7 +115,7 @@ export const deleteDevice = async (req, res) => {
       return res.status(403).json({ success: false, message: "Unauthorized" });
 
     const device_id = req.params.id;
-    const deletedDevice = await Device.findOneAndDelete(device_id);
+    const deletedDevice = await Device.findOneAndDelete({ _id: device_id });
 
     if (!deletedDevice) {
       return res.status(404).json({ message: "Device not found" });
@@ -166,11 +176,16 @@ export const createLogEntry = async (req, res) => {
       return res.status(403).json({ success: false, message: "Unauthorized" });
 
     const isValid = LogEntrySchema.safeParse(req.body);
-    if (!isValid.success)
+    if (!isValid.success) {
+      const errorMessages = isValid.error.issues.map((err) => {
+        return `${err.message}`;
+      });
       return res.status(400).json({
         success: false,
         message: "Validation Failed",
+        errors: errorMessages,
       });
+    }
     const { event, value } = isValid.data;
 
     const newEntry = new Log({
@@ -235,8 +250,12 @@ export const getUsage = async (req, res) => {
         match: { createdAt: { $gte: oneDayAgo } },
         options: { sort: { createdAt: -1 }, limit: 10 },
       });
+    let total_units_last_24h = 0;
+    deviceWithLogs.logs.map((log) => (total_units_last_24h += log.value));
 
-    return res.status(200).json({ success: true, deviceWithLogs });
+    return res
+      .status(200)
+      .json({ success: true, device_id, total_units_last_24h });
   } catch (err) {
     console.log(err);
     return res
