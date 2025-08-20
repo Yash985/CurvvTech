@@ -7,8 +7,16 @@ const deviceSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    type: String,
-    status: String,
+    type:{
+      type:String,
+      required: true,
+      trim:true
+    },
+    status: {
+      type:String,
+      required: true,
+      trim:true
+    },
     last_active_at: {
       type: Date,
       default: null,

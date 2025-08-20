@@ -1,7 +1,6 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { z } from "zod";
 import { SignUpSchema, LoginSchema } from "../validations/auth.validation.js";
 export const SignUp = async (req, res) => {
   const isValid = SignUpSchema.safeParse(req.body);
@@ -76,7 +75,7 @@ export const Login = async (req, res) => {
 
     const token = jwt.sign(user._id.toString(), process.env.JWT_SECRET);
     res.cookie("token", token, {
-      maxAge: 30 * 60 * 1000, //30 mins,
+      maxAge: 30 * 60 * 1000,//30 minds
     });
     user.password = "undefined";
     return res.status(200).json({ sucess: true, token, user });

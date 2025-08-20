@@ -11,11 +11,6 @@ export const registerDevice = async (req, res) => {
     const user_id = req.user.id;
     if (!user_id)
       return res.status(403).json({ success: false, message: "Unauthorized" });
-    // const user = await User.find({ _id: user_id });
-    // if (!user)
-    //   return res
-    //     .status(400)
-    //     .json({ success: false, message: "User Does not exist" });
     const isValid = NewDeviceSchema.safeParse(req.body);
     if (!isValid.success) {
       const errorMessages = isValid.error.issues.map((err) => {
@@ -165,10 +160,6 @@ export const updateLastActive = async (req, res) => {
 };
 
 //Analytics
-
-//------------------------------------------------------------------
-//Check this fucntion
-//------------------------------------------------------------------
 export const createLogEntry = async (req, res) => {
   try {
     const user_id = req.user.id;

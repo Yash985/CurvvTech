@@ -7,10 +7,22 @@ const userSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    password: String,
-    //email should be unique
-    email: String,
-    role: String,
+    password: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+    },
+    role: {
+      type: String,
+      required: true,
+      trim: true,
+    },
   },
   { timestamps: true }
 );

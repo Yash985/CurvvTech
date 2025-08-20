@@ -2,13 +2,16 @@ import mongoose from "mongoose";
 
 const logSchema = new mongoose.Schema(
   {
-    event: String,
-    value: Number,
-    // device_id: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Device",
-    //   required: true,
-    // },
+    event: {
+      type:String,
+      required: true,
+      trim:true
+    },
+    value: {
+      type:Number,
+      required: true,
+      trim:true
+    },
   },
   { timestamps: true }
 );
