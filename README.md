@@ -91,7 +91,7 @@
 
 | Parameter  | Type     | Description                       |
 | :--------- | :------- | :-------------------------------- |
-| `email`    | `string` | **Required**. Id of item to fetch |
+| `email`    | `string` | **Required**. |
 | `password` | `string` | **Required**.                     |
 
 ### _2. Device Management_
@@ -104,7 +104,7 @@
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `name`    | `string` | **Required**. Id of item to fetch |
+| `name`    | `string` | **Required**. |
 | `type`    | `string` | **Required**.                     |
 | `status`  | `string` | **Required**.                     |
 
